@@ -1,56 +1,67 @@
-# React + TypeScript + Vite
+# Analizador de Imágenes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es una aplicación web que permite a los usuarios subir imágenes y descubrir qué animales identifica nuestra IA.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Antes de empezar a trabajar en el proyecto, necesitarás configurar tus variables de entorno locales.
 
-## Expanding the ESLint configuration
+## Variables de entorno
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Las variables de entorno se almacenan en un archivo `.env` que **no debe ser subido al repositorio** por razones de seguridad. Este archivo contiene información sensible como claves de API o credenciales necesarias para ejecutar el proyecto correctamente.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Cómo configurar tu archivo `.env`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Copia el archivo `.env.example` a `.env`**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   Si el archivo `.env.example` está presente en el repositorio, copia su contenido a un archivo `.env` en la raíz del proyecto.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
-# analizador-de-imagenes
-# analizador-de-imagenes
+   ```bash
+   cp .env.example .env
+
+2. **Rellena las variables de entorno**
+
+Abre el archivo .env y completa las variables necesarias. Por ejemplo:
+
+REACT_APP_API_KEY=your_api_key_here
+REACT_APP_OTHER_SECRET=other_secret_here
+Asegúrate de sustituir los valores por tus propias claves o credenciales.
+
+3. **No subas el archivo .env al repositorio**
+
+El archivo .env está en el archivo .gitignore, lo que significa que no debe ser subido al repositorio. Asegúrate de mantener este archivo localmente y de nunca incluirlo en un commit.
+
+## Otros detalles de configuración
+
+Este proyecto usa React y requiere Node.js para ejecutarse. Asegúrate de tener instalado Node.js en tu máquina.
+
+## Instalación
+
+1. Clona este repositorio:
+
+git clone https://github.com/tu-usuario/analizador-de-imagenes.git
+
+2. Navega a la carpeta del proyecto:
+
+cd analizador-de-imagenes
+
+3. Instala las dependencias:
+
+npm install
+
+4. Ejecuta la aplicación:
+
+npm start
+
+## Contribución
+Si deseas contribuir al proyecto, por favor sigue los siguientes pasos:
+
+1. Haz un fork de este repositorio.
+2. Crea una nueva rama (`git checkout -b feature/nueva-caracteristica`).
+3. Realiza tus cambios.
+4. Haz commit de tus cambios (`git commit -am 'Añadir nueva característica`).
+5. Haz push de tus cambios a tu fork (`git push origin feature/nueva-caracteristica`).
+6. Crea un pull request.
+
+## Licencia
+Este proyecto está licenciado bajo la [Licencia MIT](LICENSE).
