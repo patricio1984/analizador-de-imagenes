@@ -1,5 +1,3 @@
-const HF_API_TOKEN = import.meta.env.VITE_HUGGINGFACE_API_TOKEN;
-
 interface Result {
     name: string;
     score: string;
@@ -9,29 +7,21 @@ interface Result {
 
 export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
     try {
-        if (!HF_API_TOKEN) {
+        if (!import.meta.env.VITE_HUGGINGFACE_API_TOKEN) {
             throw new Error("El token de autenticación de Hugging Face no está configurado.");
         }
 
-        // Leer el archivo como un ArrayBuffer (binario)
         const imageData = await file.arrayBuffer();
 
-        const apiUrl = process.env.NODE_ENV === 'development' 
-            ? '/api'
-            : 'https://api-inference.huggingface.co'; 
+        console.log("Tipo de imageData:", imageData);
 
-        // Hacer la solicitud a la API de Hugging Face
-        const response = await fetch(
-            `${apiUrl}/models/google/vit-base-patch16-224`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${HF_API_TOKEN}`,
-                    "Content-Type": "application/octet-stream",
-                },
-                body: imageData,
-            }
-        );
+        const response = await fetch('/.netlify/functions/huggingface-proxy', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/octet-stream",
+            },
+            body: imageData,
+        });
 
         if (!response.ok) {
             const errorMessage = await response.text();
