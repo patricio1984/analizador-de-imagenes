@@ -18,6 +18,7 @@ Las variables de entorno se almacenan en un archivo `.env` que **no debe ser sub
 
    ```bash
    cp .env.example .env
+   ```
 
 2. **Rellena las variables de entorno**
 
@@ -26,6 +27,7 @@ Abre el archivo .env y completa las variables necesarias. Por ejemplo:
 ```bash
 REACT_APP_API_KEY=your_api_key_here
 REACT_APP_OTHER_SECRET=other_secret_here
+```
 
 Asegúrate de sustituir los valores por tus propias claves o credenciales.
 
@@ -43,21 +45,25 @@ Este proyecto usa React y requiere Node.js para ejecutarse. Asegúrate de tener 
 
 ```bash
 git clone https://github.com/tu-usuario/analizador-de-imagenes.git
+```
 
 2. Navega a la carpeta del proyecto:
 
 ```bash
 cd analizador-de-imagenes
+```
 
 3. Instala las dependencias:
 
 ```bash
 npm install
+```
 
 4. Ejecuta la aplicación:
 
 ```bash
 npm start
+```
 
 ## Contribución
 Si deseas contribuir al proyecto, por favor sigue los siguientes pasos:
