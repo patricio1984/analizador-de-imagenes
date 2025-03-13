@@ -28,9 +28,9 @@ Abre el archivo .env y completa las variables necesarias. Para este proyecto, so
 HUGGINGFACE_API_TOKEN=hf_xxxxxx
 ```
 
-  . HUGGINGFACE_API_TOKEN: Tu token de acceso a la Inference API de Hugging Face. Obtén uno desde [Hugging Face - Tokens de acceso](https://huggingface.co/settings/tokens).
+  + HUGGINGFACE_API_TOKEN: Tu token de acceso a la Inference API de Hugging Face. Obtén uno desde [Hugging Face - Tokens de acceso](https://huggingface.co/settings/tokens).
 
-  . Nota: No uses el prefijo REACT_APP_ ni VITE_ para esta variable, ya que se usa en las funciones de Netlify, no en el frontend directamente.
+  + Nota: No uses el prefijo REACT_APP_ ni VITE_ para esta variable, ya que se usa en las funciones de Netlify, no en el frontend directamente.
 
 
 3. **No subas el archivo .env al repositorio**
@@ -69,18 +69,18 @@ npm install
   npx netlify dev
   ```
 
-  . Esto inicia el servidor de desarrollo en `http://localhost:8888` y hace que las funciones de Netlify estén disponibles.
+  + Esto inicia el servidor de desarrollo en `http://localhost:8888` y hace que las funciones de Netlify estén disponibles.
 
-  . Nota: Asegúrate de tener el CLI de Netlify instalado (`npm install -g netlify-cli`) si no lo tienes aún.
+  + Nota: Asegúrate de tener el CLI de Netlify instalado (`npm install -g netlify-cli`) si no lo tienes aún.
 
 ## Despliegue en Netlify
 
 Para desplegar el proyecto en Netlify:
 
 1. Configura las variables de entorno en Netlify:
-  . Ve a tu panel de Netlify > Configuración del sitio > Variables de entorno.
+  + Ve a tu panel de Netlify > Configuración del sitio > Variables de entorno.
 
-  . Añade:
+  + Añade:
 
   ```bash
   HUGGINGFACE_API_TOKEN=hf_xxxxxx
@@ -95,22 +95,18 @@ Para desplegar el proyecto en Netlify:
   O conecta tu repositorio a Netlify para despliegues automáticos.
 
 ## Tecnologías utilizadas
-. Frontend: React, TypeScript, Vite (si usas Vite como bundler).
-
-. Backend: Netlify Functions para proxy a la API de Hugging Face.
-
-. APIs: 
-
-  . Hugging Face Inference API (`google/vit-base-patch16-224`).
-
-  . Wikipedia REST API para descripciones.
++ Frontend: React, TypeScript, Vite (si usas Vite como bundler).
++ Backend: Netlify Functions para proxy a la API de Hugging Face.
++ APIs: 
+  + Hugging Face Inference API (`google/vit-base-patch16-224`).
+  + Wikipedia REST API para descripciones.
 
 ## Estructura del proyecto
-. `src/services/api.ts`: Lógica para procesar imágenes y obtener información de Wikipedia.
++ `src/services/api.ts`: Lógica para procesar imágenes y obtener información de Wikipedia.
 
-. `netlify/functions/huggingface-proxy.ts`: Función de Netlify que actúa como proxy para la API de Hugging Face.
++ `netlify/functions/huggingface-proxy.ts`: Función de Netlify que actúa como proxy para la API de Hugging Face.
 
-. `src/components/AnimalInfo.tsx`: Componente para mostrar los resultados del análisis.
++ `src/components/AnimalInfo.tsx`: Componente para mostrar los resultados del análisis.
 
 
 ## Contribución
