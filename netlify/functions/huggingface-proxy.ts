@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { Handler } from '@netlify/functions';
+import { translate } from '@vitalets/google-translate-api';
 
 const handler: Handler = async (event, context) => {
     if (event.httpMethod !== "POST") {
@@ -9,7 +10,8 @@ const handler: Handler = async (event, context) => {
     const HF_API_TOKEN = process.env.HUGGINGFACE_API_TOKEN;
 
     if (!HF_API_TOKEN) {
-        return { statusCode: 500, body: JSON.stringify({ error: "Token no configurado" }) };
+        console.error("Token de Hugging Face no configurado.");
+        return { statusCode: 500, body: JSON.stringify({ error: "El token de Hugging Face no está configurado en el servidor." }) };
     }
 
     try {
@@ -39,9 +41,23 @@ const handler: Handler = async (event, context) => {
         }
 
         const data = JSON.parse(responseText);
-        return { statusCode: 200, body: JSON.stringify(data) };
+
+        // Traducir las etiquetas al español
+        const translatedData = await Promise.all(
+            data.map(async (item: { label: string; score: number }) => {
+                try {
+                    const translation = await translate(item.label, { to: 'es' });
+                    return { label: translation.text, score: item.score };
+                } catch (error) {
+                    console.error(`Error al traducir "${item.label}":`, error);
+                    return { label: item.label, score: item.score }; // Fallback al inglés si falla
+                }
+            })
+        );
+
+        return { statusCode: 200, body: JSON.stringify(translatedData) };
     } catch (error) {
-        console.error("Error en la función:", error);
+        console.error("Error en la función proxy:", error);
         return { statusCode: 500, body: JSON.stringify({ error: "Error interno del servidor" }) };
     }
 };

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { analyzeImageFromFile } from "./services/api";
 import AnimalInfo from "./components/AnimalInfo";
 
@@ -7,8 +7,18 @@ const App = () => {
         { animalName: string; score: string; description: string; link: string }[]
     >([]);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, []);
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -102,7 +112,8 @@ const App = () => {
                             id="image-upload"
                             type="file"
                             accept="image/*"
-                            ref={fileInputRef} // Asignamos la referencia al input
+                            ref={fileInputRef}
+                            capture="environment" // Soporte para cámara en móviles
                             onChange={handleImageUpload}
                             className={`mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-customBlue-500 file:text-white hover:file:bg-customBlue-700 transition-colors ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}
                         />
@@ -214,7 +225,6 @@ const App = () => {
 };
 
 export default App;
-
 
 
 
