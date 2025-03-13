@@ -16,9 +16,13 @@ export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
         // Leer el archivo como un ArrayBuffer (binario)
         const imageData = await file.arrayBuffer();
 
+        const apiUrl = process.env.NODE_ENV === 'development' 
+            ? '/api'
+            : 'https://api-inference.huggingface.co'; 
+
         // Hacer la solicitud a la API de Hugging Face
         const response = await fetch(
-            "api/models/google/vit-base-patch16-224",
+            `${apiUrl}/models/google/vit-base-patch16-224`,
             {
                 method: "POST",
                 headers: {
