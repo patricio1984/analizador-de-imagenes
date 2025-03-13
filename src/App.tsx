@@ -10,7 +10,7 @@ const App = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
-    const [isLoading, setIsLoading] = useState(false); // Nuevo estado para loading
+    const [isLoading, setIsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const App = () => {
         if (file) {
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
-            setIsLoading(true); // Activar loading
+            setIsLoading(true);
             try {
                 const analysisResults = await analyzeImageFromFile(file);
                 const formattedResults = analysisResults.map(result => ({
@@ -45,7 +45,7 @@ const App = () => {
                     link: "#",
                 }]);
             } finally {
-                setIsLoading(false); // Desactivar loading al finalizar (éxito o error)
+                setIsLoading(false);
             }
         }
     };
@@ -119,7 +119,6 @@ const App = () => {
                             type="file"
                             accept="image/*"
                             ref={fileInputRef}
-                            capture="environment"
                             onChange={handleImageUpload}
                             className={`mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-customBlue-500 file:text-white hover:file:bg-customBlue-700 transition-colors ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}
                         />

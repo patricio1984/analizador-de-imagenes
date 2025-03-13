@@ -50,7 +50,7 @@ const handler: Handler = async (event, context) => {
                     return { label: translation.text, score: item.score };
                 } catch (error) {
                     console.error(`Error al traducir "${item.label}":`, error);
-                    return { label: item.label, score: item.score }; // Fallback al inglés si falla
+                    return { label: item.label, score: item.score };
                 }
             })
         );

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 interface ImageUploadProps {
-    onImageUpload: (file: File) => void; // Función para manejar la imagen cargada
+    onImageUpload: (file: File) => void;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
-    const [preview, setPreview] = useState<string | null>(null); // Vista previa de la imagen cargada
+    const [preview, setPreview] = useState<string | null>(null);
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -17,8 +17,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
                 return;
             }
 
-            setPreview(URL.createObjectURL(file)); // Crear vista previa de la imagen
-            onImageUpload(file); // Llamar a la función proporcionada con el archivo
+            setPreview(URL.createObjectURL(file));
+            onImageUpload(file);
         }
     };
 
