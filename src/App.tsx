@@ -10,6 +10,7 @@ const App = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
+    const [isLoading, setIsLoading] = useState(false); // Nuevo estado para loading
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -25,6 +26,7 @@ const App = () => {
         if (file) {
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
+            setIsLoading(true); // Activar loading
             try {
                 const analysisResults = await analyzeImageFromFile(file);
                 const formattedResults = analysisResults.map(result => ({
@@ -42,6 +44,8 @@ const App = () => {
                     description: "Hubo un problema al procesar la imagen.",
                     link: "#",
                 }]);
+            } finally {
+                setIsLoading(false); // Desactivar loading al finalizar (éxito o error)
             }
         }
     };
@@ -58,6 +62,8 @@ const App = () => {
     const toggleDarkMode = () => {
         setIsDarkMode(prev => !prev);
     };
+
+    const hasValidResults = results.length > 0 && results[0].animalName !== "Error";
 
     return (
         <div className={`min-h-screen flex flex-col items-center p-4 ${isDarkMode ? 'bg-gray-900' : 'bg-customBlue-50'} transition duration-300 ease-in-out`}>
@@ -96,7 +102,7 @@ const App = () => {
                     </button>
                 </div>
                 <p className={`text-lg text-center max-w-2xl mb-8 ${isDarkMode ? 'dark text-gray-300' : 'text-gray-600'}`}>
-                    Sube una imagen y descubre qué animales identifica nuestra IA.
+                    Sube una imagen y averigua qué animal podría ser según nuestra IA.
                 </p>
             </header>
 
@@ -113,7 +119,7 @@ const App = () => {
                             type="file"
                             accept="image/*"
                             ref={fileInputRef}
-                            capture="environment" // Soporte para cámara en móviles
+                            capture="environment"
                             onChange={handleImageUpload}
                             className={`mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-customBlue-500 file:text-white hover:file:bg-customBlue-700 transition-colors ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}
                         />
@@ -121,44 +127,71 @@ const App = () => {
                 </div>
 
                 {imagePreview ? (
-                    <section className="flex flex-col md:flex-row gap-6 animate-fade-in w-full">
-                        {/* Vista previa */}
-                        <div className="flex-1 space-y-4" role="region" aria-label="Vista previa de la imagen">
-                            <h2 className={`text-xl font-semibold mb-2 ${isDarkMode ? 'dark text-gray-200' : 'text-customBlue-700'}`}>Vista previa</h2>
-
-                            <img src={imagePreview} alt="Vista previa de la imagen subida" className="w-full h-auto max-h-80 object-contain rounded-md" />
-
-                            <button onClick={handleImageReset} className="mt-4 w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-800 transition-colors">
-                                Borrar imagen
-                            </button>
-
-                            {results.length > 0 && (
-                                <div className={`p-4 rounded-lg shadow-md text-center ${isDarkMode ? 'dark bg-gray-400' : 'bg-white'}`}>
-                                    <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-800' : 'text-customBlue-700'}`}>
-                                        Resumen
-                                    </h3>
-
-                                    <p className={`${isDarkMode ? 'dark text-black' : 'text-gray-600'}`}>
-                                        Identificamos {results.length} posibles animales en tu imagen.
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                
-                        {/* Resultados */}
-                        <div className="flex-1 space-y-4" role="region" aria-label="Resultados del análisis">
-                            {results.length > 0 && results.map((result, index) => (
-                                <AnimalInfo
-                                    key={index}
-                                    animalName={result.animalName}
-                                    score={result.score}
-                                    description={result.description}
-                                    link={result.link}
-                                    isDarkMode={isDarkMode}
+                    isLoading ? (
+                        <div className="flex flex-col items-center justify-center h-64">
+                            <svg
+                                className={`animate-spin h-12 w-12 ${isDarkMode ? 'text-gray-200' : 'text-customBlue-500'}`}
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
                                 />
-                            ))}
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                />
+                            </svg>
+                            <p className={`mt-4 text-lg ${isDarkMode ? 'text-gray-200' : 'text-gray-600'}`}>
+                                Analizando tu imagen...
+                            </p>
                         </div>
-                    </section>
+                    ) : (
+                        <section className="flex flex-col md:flex-row gap-6 animate-fade-in w-full">
+                            {/* Vista previa */}
+                            <div className="flex-1 space-y-4" role="region" aria-label="Vista previa de la imagen">
+                                <h2 className={`text-xl font-semibold mb-2 ${isDarkMode ? 'dark text-gray-200' : 'text-customBlue-700'}`}>Vista previa</h2>
+
+                                <img src={imagePreview} alt="Vista previa de la imagen subida" className="w-full h-auto max-h-80 object-contain rounded-md" />
+
+                                <button onClick={handleImageReset} className="mt-4 w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-800 transition-colors">
+                                    Borrar imagen
+                                </button>
+
+                                {hasValidResults && (
+                                    <div className={`p-4 rounded-lg shadow-md text-center ${isDarkMode ? 'dark bg-gray-400' : 'bg-white'}`}>
+                                        <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-800' : 'text-customBlue-700'}`}>
+                                            Resumen
+                                        </h3>
+                                        <p className={`${isDarkMode ? 'dark text-black' : 'text-gray-600'}`}>
+                                            Aquí tienes las {results.length} opciones más probables de qué animal podría ser tu imagen.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                
+                            {/* Resultados */}
+                            <div className="flex-1 space-y-4" role="region" aria-label="Resultados del análisis">
+                                {results.length > 0 && results.map((result, index) => (
+                                    <AnimalInfo
+                                        key={index}
+                                        animalName={result.animalName}
+                                        score={result.score}
+                                        description={result.description}
+                                        link={result.link}
+                                        isDarkMode={isDarkMode}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    )
                 ) : (
                     <div className={`flex flex-col items-center text-center animate-fade-in ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}>
                         <svg
@@ -225,7 +258,6 @@ const App = () => {
 };
 
 export default App;
-
 
 
 
