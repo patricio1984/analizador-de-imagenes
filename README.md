@@ -96,9 +96,13 @@ Para desplegar el proyecto en Netlify:
 
 ## Tecnologías utilizadas
 . Frontend: React, TypeScript, Vite (si usas Vite como bundler).
+
 . Backend: Netlify Functions para proxy a la API de Hugging Face.
+
 . APIs: 
+
   . Hugging Face Inference API (`google/vit-base-patch16-224`).
+
   . Wikipedia REST API para descripciones.
 
 ## Estructura del proyecto
