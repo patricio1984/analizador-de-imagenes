@@ -7,43 +7,41 @@ const handler: Handler = async (event, context) => {
     }
 
     const HF_API_TOKEN = process.env.HUGGINGFACE_API_TOKEN;
-    const apiUrl = "https://api-inference.huggingface.co/models/google/vit-base-patch16-224";
-
-    console.log("Token HF:", HF_API_TOKEN ? "Presente" : "Ausente");
 
     if (!HF_API_TOKEN) {
-        return { statusCode: 500, body: JSON.stringify({ error: "El token de Hugging Face no está configurado en el servidor." }) };
+        return { statusCode: 500, body: JSON.stringify({ error: "Token no configurado" }) };
     }
 
     try {
         if (!event.body) {
-            return { statusCode: 400, body: JSON.stringify({ error: "El cuerpo de la solicitud no puede ser nulo." }) };
+            return { statusCode: 400, body: JSON.stringify({ error: "No se envió ninguna imagen." }) };
         }
 
         const binaryData = Buffer.from(event.body, 'base64');
-        console.log("Datos binarios enviados:", binaryData.length, "bytes");
 
-        const response = await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${HF_API_TOKEN}`,
-                "Content-Type": "application/octet-stream",
-            },
-            body: binaryData,
-        });
+        const response = await fetch(
+            "https://api-inference.huggingface.co/models/google/vit-base-patch16-224",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${HF_API_TOKEN}`,
+                    "Content-Type": "application/octet-stream",
+                },
+                body: binaryData,
+            }
+        );
 
         const responseText = await response.text();
-        console.log("Estado de la respuesta:", response.status);
-        console.log("Respuesta completa:", responseText);
 
         if (!response.ok) {
+            console.error("Error de Hugging Face:", responseText);
             return { statusCode: response.status, body: JSON.stringify({ error: responseText }) };
         }
 
         const data = JSON.parse(responseText);
         return { statusCode: 200, body: JSON.stringify(data) };
     } catch (error) {
-        console.error("Error en la función proxy:", error);
+        console.error("Error en la función:", error);
         return { statusCode: 500, body: JSON.stringify({ error: "Error interno del servidor" }) };
     }
 };

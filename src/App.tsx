@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { analyzeImageFromFile } from "./services/api";
 import AnimalInfo from "./components/AnimalInfo";
 
@@ -8,6 +8,7 @@ const App = () => {
     >([]);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -39,6 +40,9 @@ const App = () => {
         if (imagePreview) URL.revokeObjectURL(imagePreview);
         setImagePreview(null);
         setResults([]);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const toggleDarkMode = () => {
@@ -70,13 +74,13 @@ const App = () => {
                             </svg>
                         ) : (
                             <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
                             >
-                            <path d="M12 4a1 1 0 110-2 1 1 0 010 2zm0 16a1 1 0 110 2 1 1 0 010-2zm10-8a1 1 0 110 2 1 1 0 010-2zm-20 0a1 1 0 110 2 1 1 0 010-2zm16.95-7.05a1 1 0 111.414 1.414l-1.414-1.414zm-13.9 13.9a1 1 0 111.414 1.414l-1.414-1.414zm13.9 1.414a1 1 0 11-1.414-1.414l1.414 1.414zM4.636 6.05a1 1 0 11-1.414-1.414l1.414 1.414zM12 6a6 6 0 100 12 6 6 0 000-12zM12 8a4 4 0 110 8 4 4 0 010-8z" />
+                                <path d="M12 4a1 1 0 110-2 1 1 0 010 2zm0 16a1 1 0 110 2 1 1 0 010-2zm10-8a1 1 0 110 2 1 1 0 010-2zm-20 0a1 1 0 110 2 1 1 0 010-2zm16.95-7.05a1 1 0 111.414 1.414l-1.414-1.414zm-13.9 13.9a1 1 0 111.414 1.414l-1.414-1.414zm13.9 1.414a1 1 0 11-1.414-1.414l1.414 1.414zM4.636 6.05a1 1 0 11-1.414-1.414l1.414 1.414zM12 6a6 6 0 100 12 6 6 0 000-12zM12 8a4 4 0 110 8 4 4 0 010-8z" />
                             </svg>
                         )}
                     </button>
@@ -98,6 +102,7 @@ const App = () => {
                             id="image-upload"
                             type="file"
                             accept="image/*"
+                            ref={fileInputRef} // Asignamos la referencia al input
                             onChange={handleImageUpload}
                             className={`mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-customBlue-500 file:text-white hover:file:bg-customBlue-700 transition-colors ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}
                         />
@@ -143,25 +148,25 @@ const App = () => {
                             ))}
                         </div>
                     </section>
-                        ) : (
-                            <div className={`flex flex-col items-center text-center animate-fade-in ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="120"
-                                    height="120"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="1"
-                                    className="mb-4"
-                                >
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                    <polyline points="21 15 16 10 5 21" />
-                                </svg>
-                                <p>Sube una imagen para comenzar</p>
-                            </div>
-                        )}
+                ) : (
+                    <div className={`flex flex-col items-center text-center animate-fade-in ${isDarkMode ? 'dark text-gray-200' : 'text-gray-500'}`}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="120"
+                            height="120"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            className="mb-4"
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                        <p>Sube una imagen para comenzar</p>
+                    </div>
+                )}
             </main>
 
             {/* Footer */}
@@ -209,7 +214,6 @@ const App = () => {
 };
 
 export default App;
-
 
 
 
