@@ -7,8 +7,36 @@ interface Result {
 
 export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
     try {
-        const imageData = await file.arrayBuffer();
+        // Preprocesar la imagen en el frontend
+        const canvas = document.createElement("canvas");
+        canvas.width = 224;
+        canvas.height = 224;
+        const ctx = canvas.getContext("2d");
 
+        // Verificar si ctx es null
+        if (!ctx) {
+            throw new Error("No se pudo inicializar el contexto 2D del canvas.");
+        }
+
+        const img = new Image();
+        const imageUrl = URL.createObjectURL(file);
+        await new Promise((resolve) => {
+            img.onload = resolve;
+            img.src = imageUrl;
+        });
+
+        // Dibujar la imagen redimensionada en el canvas
+        ctx.drawImage(img, 0, 0, 224, 224);
+        URL.revokeObjectURL(imageUrl);
+
+        // Convertir el canvas a un Blob (JPEG)
+        const imageBlob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.9);
+        });
+
+        const imageData = await imageBlob.arrayBuffer();
+
+        // Enviar la imagen preprocesada al proxy de Netlify
         const response = await fetch("/.netlify/functions/huggingface-proxy", {
             method: "POST",
             headers: {
@@ -28,12 +56,10 @@ export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
             return [{ name: "Desconocido", score: "0%", description: "No se pudo identificar el objeto.", link: "#" }];
         }
 
-        // Procesar los 5 primeros resultados con Wikipedia
         const topFive = data.slice(0, 5).map(async (item: { label: string; score: number }) => {
             const objectName = item.label ?? "Desconocido";
             const score = `${(item.score * 100).toFixed(1)}%`;
 
-            // Consultar Wikipedia para obtener más información
             const wikiUrl = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(objectName)}`;
             const wikiResponse = await fetch(wikiUrl);
 
@@ -53,7 +79,6 @@ export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
             return { name: objectName, score, description, link };
         });
 
-        // Esperar a que todas las consultas a Wikipedia se resuelvan
         const results = await Promise.all(topFive);
         return results;
     } catch (error) {
@@ -61,4 +86,3 @@ export const analyzeImageFromFile = async (file: File): Promise<Result[]> => {
         throw new Error("Hubo un problema al procesar la imagen.");
     }
 };
-
