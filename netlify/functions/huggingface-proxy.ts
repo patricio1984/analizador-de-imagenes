@@ -22,7 +22,7 @@ const handler: Handler = async (event, context) => {
         const binaryData = Buffer.from(event.body, 'base64');
 
         const response = await fetch(
-            "https://api-inference.huggingface.co/models/google/vit-base-patch16-224",
+            "https://api-inference.huggingface.co/models/google/vit-large-patch16-224",
             {
                 method: "POST",
                 headers: {
